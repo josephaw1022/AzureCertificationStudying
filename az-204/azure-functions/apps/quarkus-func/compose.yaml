@@ -1,0 +1,16 @@
+name: official-docs-instructions
+
+
+services:
+  functionapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # image: azure-official-docs-instructions:dev
+    container_name: quarkus-azure-function
+    environment:
+      FUNCTIONS_WORKER_RUNTIME: java
+      FUNCTIONS_EXTENSION_VERSION: "~4"
+    ports:
+      - "8080:80"
+    restart: unless-stopped
