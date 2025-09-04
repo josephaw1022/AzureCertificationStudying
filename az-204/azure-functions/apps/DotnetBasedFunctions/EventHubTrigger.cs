@@ -1,3 +1,8 @@
+using System;
+using Azure.Messaging.EventHubs;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Extensions.Logging;
+
 namespace DotnetBasedFunctions;
 
 public class EventHubTrigger
