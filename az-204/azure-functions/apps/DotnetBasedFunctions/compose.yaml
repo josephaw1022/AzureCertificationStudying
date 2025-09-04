@@ -1,0 +1,35 @@
+services:
+  dotnetbasedfunctions:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: dotnetbasedfunctions:dev
+    ports:
+      - "7071:80"
+    environment:
+      AzureFunctionsJobHost__Logging__Console__IsEnabled: "true"
+      DOTNET_ENVIRONMENT: "Development"
+    network_mode: "host"
+    develop:
+      watch:
+        # Rebuild on code changes (C#, csproj, etc.)
+        - action: rebuild
+          path: .
+          ignore:
+            - bin
+            - obj
+            - .git
+            - .vs
+            - .vscode
+            - Dockerfile
+            - Taskfile.yaml
+            - kind-config.yaml
+            - k8s-deploy-funcs.yaml
+            - local-setup/
+        # Sync + restart for config changes
+        - action: sync+restart
+          path: host.json
+          target: /home/site/wwwroot/host.json
+        - action: sync+restart
+          path: local.settings.json
+          target: /home/site/wwwroot/local.settings.json

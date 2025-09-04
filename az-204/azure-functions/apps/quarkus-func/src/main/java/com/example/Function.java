@@ -15,7 +15,6 @@ import com.microsoft.azure.functions.annotation.HttpTrigger;
 import jakarta.inject.Inject;
 import org.jboss.logging.Logger;
 
-
 import java.util.List;
 import java.util.Optional;
 
@@ -57,8 +56,11 @@ public class Function {
 
     @FunctionName("Eh1TriggerJavaQuarkus")
     public void eh1Trigger(
+
             @EventHubTrigger(name = "messages2", eventHubName = "eh1", consumerGroup = "cg1", connection = "EventHubConnection", cardinality = Cardinality.MANY, dataType = "string") List<String> messages,
+
             @BlobOutput(name = "outputBlob", path = "eventhub-output/{rand-guid}.txt", connection = "AzureWebJobsStorage") OutputBinding<String> outputBlob,
+
             final ExecutionContext context) {
 
         logger.info("Eh1TriggerJavaQuarkus got batch size: " + messages.size());

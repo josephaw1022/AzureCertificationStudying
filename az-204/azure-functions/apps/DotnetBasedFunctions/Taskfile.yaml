@@ -1,0 +1,50 @@
+
+version: 3
+
+
+tasks:
+
+  default:
+    cmds:
+      - task --list
+    desc: Show available tasks
+
+  
+  build-image:
+    cmds:
+      -  dotnet publish -t:PublishContainer -c Release -p:ContainerRegistry=docker.io -p:ContainerRepository=josephaw1022/azure-func-container-dotnet9 -p:ContainerTag=latest
+    desc: Build the Docker image for the application
+  
+  kind-cluster-create:
+    cmds:
+      - kind create cluster --config kind-config.yaml
+      - helm repo add kedacore https://kedacore.github.io/charts || true
+      - helm repo update
+      - helm upgrade --install keda kedacore/keda --namespace keda --create-namespace
+      - kubectl create ns deploy-funcs
+      - kubens deploy-funcs
+
+    desc: Create a local Kubernetes cluster with KinD and install KEDA
+  
+  kind-cluster-delete:
+    cmds:
+      - kind delete cluster
+    desc: Delete the local Kubernetes cluster
+
+
+  kind-load-image:
+    cmds:
+      - kind load docker-image josephaw1022/azure-func-container-dotnet9:latest --name kind
+    desc: Load the Docker image into the KinD cluster
+
+  
+  generate-func-k8s-yaml:
+    cmds:
+      -  func kubernetes deploy --name azure-func-container-dotnet9 --namespace deploy-funcs --registry josephaw1022 --write-configs --config-file k8s-deploy-funcs.yaml --image-build false --service-type NodePort
+    desc: Generate Kubernetes YAML files for the Azure Function app
+
+
+  apply-func-k8s-kustomize:
+    cmds:
+      - kubectl apply -k .
+    desc: Apply the Kustomize overlay for the Azure Function app

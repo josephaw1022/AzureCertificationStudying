@@ -1,0 +1,126 @@
+data:
+  AzureWebJobsStorage: VXNlRGV2ZWxvcG1lbnRTdG9yYWdlPXRydWU=
+  FUNCTIONS_WORKER_RUNTIME: ZG90bmV0LWlzb2xhdGVk
+  EventHubConnection: RW5kcG9pbnQ9c2I6Ly9sb2NhbGhvc3Q7U2hhcmVkQWNjZXNzS2V5TmFtZT1Sb290TWFuYWdlU2hhcmVkQWNjZXNzS2V5O1NoYXJlZEFjY2Vzc0tleT1FYnk4dmRNMDJ4Tk9jcUZscVV3SlBMbG1FdGxDRFhKMU9VekZUNTB1U1JaNkF6cldSbEU4a0F6c1l6MD07VXNlRGV2ZWxvcG1lbnRFbXVsYXRvcj10cnVlOw==
+apiVersion: v1
+kind: Secret
+metadata:
+  name: azure-func-container-dotnet9
+  namespace: deploy-funcs
+---
+data:
+  host.master: X0JmUndiam50ZzEyeXJpSGVyeS1RUHdzb0N5U0QzQ0tPZGtKS01EM0NTYllBekZ1am9wNzJBPT0=
+  host.function.default: ZS14cnBFd09NT0JtbGlOOElfdUtQOUNCRmNIOU5ybmFZR01nT2VyWmE0Q0xBekZ1WDgtNnlnPT0=
+  host.systemKey.default: YjBKRC1vR21HSmY0azZEV3d5R0lGNkdsOFJEM0Ywbnpjb19ZWW9BSl82dXZBekZ1M1JxSHZRPT0=
+  functions.httpexample.default: QldlNjNYMURweFB4VE45OXJBbkQ5U3ZOVkFOUkNuU2lITTVIT3I1ck5PNzZBekZ1T01FYlBBPT0=
+apiVersion: v1
+kind: Secret
+metadata:
+  name: func-keys-kube-secret-azure-func-container-dotnet9
+  namespace: deploy-funcs
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: azure-func-container-dotnet9-function-keys-identity-svc-act
+  namespace: deploy-funcs
+---
+rules:
+- apiGroups:
+  - ''
+  resources:
+  - secrets
+  - configMaps
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: functions-keys-manager-role
+  namespace: deploy-funcs
+---
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: functions-keys-manager-role
+subjects:
+- kind: ServiceAccount
+  name: azure-func-container-dotnet9-function-keys-identity-svc-act
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: azure-func-container-dotnet9-function-keys-identity-svc-act-functions-keys-manager-rolebinding
+  namespace: deploy-funcs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: azure-func-container-dotnet9-http
+  namespace: deploy-funcs
+spec:
+  selector:
+    app: azure-func-container-dotnet9-http
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: NodePort
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azure-func-container-dotnet9-http
+  namespace: deploy-funcs
+  labels:
+    app: azure-func-container-dotnet9-http
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: azure-func-container-dotnet9-http
+  template:
+    metadata:
+      labels:
+        app: azure-func-container-dotnet9-http
+    spec:
+      containers:
+      - name: azure-func-container-dotnet9-http
+        image: josephaw1022/azure-func-container-dotnet9:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: AzureFunctionsJobHost__functions__0
+          value: HttpExample
+        - name: AzureWebJobsSecretStorageType
+          value: kubernetes
+        - name: AzureWebJobsKubernetesSecretName
+          value: secrets/func-keys-kube-secret-azure-func-container-dotnet9
+        envFrom:
+        - secretRef:
+            name: azure-func-container-dotnet9
+        readinessProbe:
+          failureThreshold: 3
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 240
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+        startupProbe:
+          failureThreshold: 3
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 240
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+      serviceAccountName: azure-func-container-dotnet9-function-keys-identity-svc-act
+---
