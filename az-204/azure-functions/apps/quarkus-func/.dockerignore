@@ -1,0 +1,38 @@
+# Maven build output
+target/
+*.jar
+*.war
+*.ear
+
+# Node / frontend (if any future additions)
+node_modules/
+dist/
+build/
+
+# Local configs & secrets
+local.settings.json
+*.log
+*.tmp
+
+# Docker / Compose files
+docker-compose*.yml
+compose.yaml
+.dockerignore
+Dockerfile
+
+# IDE & editor files
+.vscode/
+.idea/
+*.iml
+*.swp
+*.swo
+*~
+*.bak
+
+# Git
+.git/
+.gitignore
+
+# OS metadata
+.DS_Store
+Thumbs.db

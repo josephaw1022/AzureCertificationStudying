@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    # image: azure-official-docs-instructions:dev
+    image: docker.io/josephaw1022/my-quarkus-azure-function:2025-09.01
     container_name: quarkus-azure-function
     environment:
       FUNCTIONS_WORKER_RUNTIME: java

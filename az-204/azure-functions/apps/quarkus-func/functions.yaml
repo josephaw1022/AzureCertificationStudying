@@ -1,0 +1,10 @@
+data:
+  AzureWebJobsStorage: UseDevelopmentStorage=true
+  FUNCTIONS_WORKER_RUNTIME: java
+  EventHubConnection: Endpoint=sb://localhost;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quarkus-app
+  namespace: quarkus-app
+---
