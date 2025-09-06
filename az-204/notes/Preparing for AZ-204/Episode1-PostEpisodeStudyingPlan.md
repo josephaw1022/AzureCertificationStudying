@@ -22,6 +22,8 @@ Let's do this by section
 
 - create terraform modules of each acr tier and show the feature of each tier
 
+- do same thing as tf module, but do it via azure cli
+
 ### ACI (Azure Container Instance)
 
 - Basics (what purpose, what is manages for you, etc...)
@@ -41,6 +43,8 @@ Let's do this by section
 - write an aci container group using the arm template (make it complex too)
 - write an aci container group using yaml file (make it complex too)
 
+- write an aci container group using azure cli
+
 
 
 ### Azure Container Apps
@@ -53,6 +57,7 @@ Let's do this by section
 
 - Create a terraform module that shows multiple tiers and configuration setups for azure container apps. Use this as a way to learn the differences between the tiers and how each one works!
 
+- do same thing with azure cli
 
 
 ### Azure App Service
@@ -72,6 +77,8 @@ Let's do this by section
 
 - Implement the same thing the terraform does, but do it through the ui.
 
+- do the same thing but do it via the azure cli
+
 
 
 ### Azure Functions
@@ -84,6 +91,8 @@ Quick note - I feel like this video didn't talk about azure functions that much 
 
 - Memorize hosting tiers and the characteristics of each
 
-- Write examples for multiple functions wtih different trigger types, input bindings and output bindings. 
+- Write examples for multiple functions wtih different trigger types, input bindings and output bindings.
 
 - Terraform modules of the multiple azure functions that use a different tier. so one for each tier or multiple for each tier. just learn the nuances of each hosting tiers.
+
+- then deploy one of these functions via ui, another via az cli, another via func cli, and another via azd cli
