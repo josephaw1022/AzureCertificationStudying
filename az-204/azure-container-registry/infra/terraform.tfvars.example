@@ -1,0 +1,3 @@
+rg_name  = "demo-rg"
+location = "East US"
+subscription_id = ""

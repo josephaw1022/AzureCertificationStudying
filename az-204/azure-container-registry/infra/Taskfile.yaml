@@ -1,0 +1,48 @@
+version: '3'
+
+tasks:
+
+  default:
+    desc: List all of the tasks in the taskfile
+    cmds:
+      - task --list-all
+
+  init:
+    desc: Initialize OpenTofu
+    cmds:
+      - tofu init
+
+  validate:
+    desc: Validate configuration
+    cmds:
+      - tofu validate
+
+  plan:
+    desc: Create an execution plan (no file output)
+    cmds:
+      - tofu plan
+
+  apply:
+    desc: Apply changes (no plan file; auto-approve)
+    cmds:
+      - tofu apply -auto-approve
+
+  destroy:
+    desc: Destroy all resources (auto-approve)
+    cmds:
+      - tofu destroy -auto-approve
+
+  fmt:
+    desc: Format *.tf files recursively
+    cmds:
+      - tofu fmt -recursive
+
+  list:
+    desc: Show resources in the current state
+    cmds:
+      - tofu state list
+
+  clean:
+    desc: Remove local caches (keeps state)
+    cmds:
+      - rm -rf .terraform .terraform.lock.hcl || true

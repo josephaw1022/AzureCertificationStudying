@@ -1,0 +1,10 @@
+{
+  "version": "v1",
+  "tag-convention": "incremental",
+  "repositories": [
+    { "repository": "argoproj/argocd",   "tags": ["*"], "enabled": true },
+    { "repository": "argoproj/argocli",  "tags": ["*"], "enabled": true },
+    { "repository": "argoproj/argoexec", "tags": ["*"], "enabled": true },
+    { "repository": "ecr/docker/library/nginx", "tags": ["*"], "enabled": true }
+  ]
+}
