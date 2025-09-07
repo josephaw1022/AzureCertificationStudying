@@ -36,7 +36,7 @@ Let's do this by section
 
 - Know when which deployment method is best for which situations
 
-- Take notes from this [learning module] (https://learn.microsoft.com/en-us/training/modules/create-run-container-images-azure-container-instances/)
+- Take notes from this [learning module](https://learn.microsoft.com/en-us/training/modules/create-run-container-images-azure-container-instances/)
 
 - Write a Terraform module to create an ACI container group. dont just make basic examples that dont do anything. use things such as vnets, managed identity, azure storage, key vault, etc... 
 
@@ -53,7 +53,7 @@ Let's do this by section
 
 - When to use Azure Container Apps
 
-- Takes notes from this [learning module] (https://learn.microsoft.com/en-us/training/modules/implement-azure-container-apps/)
+- Takes notes from this [learning module](https://learn.microsoft.com/en-us/training/modules/implement-azure-container-apps/)
 
 - Create a terraform module that shows multiple tiers and configuration setups for azure container apps. Use this as a way to learn the differences between the tiers and how each one works!
 
