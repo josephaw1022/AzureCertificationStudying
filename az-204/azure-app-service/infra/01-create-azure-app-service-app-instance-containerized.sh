@@ -36,13 +36,8 @@ if ! az webapp show --name "$webappName" --resource-group "$resourceGroup" >/dev
   az webapp create \
     --resource-group "$resourceGroup" \
     --plan "$planName" \
-    --name "$webappName" 1>/dev/null
-
-  az webapp config container set \
     --name "$webappName" \
-    --resource-group "$resourceGroup" \
-    --container-image-name "$containerImageToUse" 1>/dev/null
-
+    --deployment-container-image-name "$containerImageToUse" 1>/dev/null
 else
   az webapp config container set \
     --name "$webappName" \
