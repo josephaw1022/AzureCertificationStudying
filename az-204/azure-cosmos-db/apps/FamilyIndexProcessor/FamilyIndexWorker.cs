@@ -128,7 +128,7 @@ public sealed class FamilyIndexWorker : BackgroundService
             {
                 checkedCount++;
                 var fid = (string?)row["familyId"];
-                var id  = (string?)row["id"];
+                var id = (string?)row["id"];
                 if (string.IsNullOrEmpty(fid) || string.IsNullOrEmpty(id))
                     continue;
 
@@ -161,22 +161,28 @@ public sealed class FamilyIndexWorker : BackgroundService
         return false;
     }
 
-    private static async Task DeleteMarkerAsync(Container invites, string familyId, CancellationToken ct)
+    private async Task DeleteMarkerAsync(Container invites, string familyId, CancellationToken ct)
     {
         var markerId = $"fam-{familyId}";
         try
         {
             await invites.DeleteItemAsync<JObject>(markerId, new PartitionKey(familyId), cancellationToken: ct);
+            _logger.LogInformation("🗑️ Deleted marker for familyId {FamilyId}", familyId);
         }
-        catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound) { }
+        catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            _logger.LogDebug("Marker not found for familyId {FamilyId}", familyId);
+        }
     }
 
-    private static async Task DeleteInvitesAsync(Container invites, string familyId, CancellationToken ct)
+    private async Task DeleteInvitesAsync(Container invites, string familyId, CancellationToken ct)
     {
         var q = new QueryDefinition("SELECT c.id FROM c WHERE c.kind != 'familyIndex'");
         using var it = invites.GetItemQueryIterator<JObject>(
             q,
             requestOptions: new QueryRequestOptions { PartitionKey = new PartitionKey(familyId) });
+
+        int deletedCount = 0;
 
         while (it.HasMoreResults)
         {
@@ -187,8 +193,12 @@ public sealed class FamilyIndexWorker : BackgroundService
                 if (!string.IsNullOrEmpty(id))
                 {
                     await invites.DeleteItemAsync<JObject>(id, new PartitionKey(familyId), cancellationToken: ct);
+                    deletedCount++;
                 }
             }
         }
+
+        _logger.LogInformation("🗑️ Deleted {Count} invites for familyId {FamilyId}", deletedCount, familyId);
     }
+
 }
