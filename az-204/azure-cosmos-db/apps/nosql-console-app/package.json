@@ -1,0 +1,22 @@
+{
+  "name": "nosql-console-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "setup": "node src/setup.js",
+    "clear": "node src/clear-data.js",
+    "schools-setup": "node src/school-food-and-nutrition-setup.js",
+    "functions": "node src/get-functions.js",
+    "run": "node src/run-functions.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "type": "module",
+  "dependencies": {
+    "@azure/cosmos": "^4.5.1",
+    "@faker-js/faker": "^10.0.0",
+    "dotenv": "^17.2.2"
+  }
+}
