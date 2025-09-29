@@ -7,7 +7,8 @@
     "clear": "node src/clear-data.js",
     "schools-setup": "node src/school-food-and-nutrition-setup.js",
     "functions": "node src/get-functions.js",
-    "run": "node src/run-functions.js"
+    "run": "node src/run-functions.js",
+    "delete-family-sp": "node src/run-delete-family-sp.js"
   },
   "keywords": [],
   "author": "",
