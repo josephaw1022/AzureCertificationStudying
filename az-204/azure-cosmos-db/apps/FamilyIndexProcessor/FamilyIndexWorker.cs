@@ -177,7 +177,8 @@ public sealed class FamilyIndexWorker : BackgroundService
 
     private async Task DeleteInvitesAsync(Container invites, string familyId, CancellationToken ct)
     {
-        var q = new QueryDefinition("SELECT c.id FROM c WHERE c.kind != 'familyIndex'");
+        // Match docs that are *not* markers by checking for missing kind
+        var q = new QueryDefinition("SELECT c.id FROM c WHERE NOT IS_DEFINED(c.kind)");
         using var it = invites.GetItemQueryIterator<JObject>(
             q,
             requestOptions: new QueryRequestOptions { PartitionKey = new PartitionKey(familyId) });
@@ -200,5 +201,6 @@ public sealed class FamilyIndexWorker : BackgroundService
 
         _logger.LogInformation("🗑️ Deleted {Count} invites for familyId {FamilyId}", deletedCount, familyId);
     }
+
 
 }
