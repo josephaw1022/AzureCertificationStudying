@@ -160,6 +160,81 @@ var familyMembersContainerProperties = new ContainerProperties("familyMembers", 
 
 var familyMembersContainer = (await db.Database.CreateContainerIfNotExistsAsync(familyMembersContainerProperties)).Container;
 
+string deleteFamilySprocBody = @"
+function deleteFamily(fid) {
+  var c = getContext();
+  var coll = c.getCollection();
+  var resp = c.getResponse();
+  var count = 0;
+
+  var querySpec = {
+    query: 'SELECT c._self FROM c WHERE c.familyId = @fid',
+    parameters: [{ name: '@fid', value: fid }]
+  };
+
+  queryAndDelete();
+
+  function queryAndDelete(continuation) {
+    var accepted = coll.queryDocuments(
+      coll.getSelfLink(),
+      querySpec,
+      { continuation: continuation, pageSize: 100, partitionKey: fid },
+      function (err, docs, options) {
+        if (err) throw err;
+        if (!docs || docs.length === 0) {
+          resp.setBody(count);
+          return;
+        }
+        deleteBatch(docs, function () {
+          if (options.continuation) {
+            queryAndDelete(options.continuation);
+          } else {
+            resp.setBody(count);
+          }
+        });
+      });
+
+    if (!accepted) resp.setBody(count);
+  }
+
+  function deleteBatch(docs, callback) {
+    if (docs.length === 0) {
+      callback();
+      return;
+    }
+
+    var doc = docs.shift();
+    var accepted = coll.deleteDocument(
+      doc._self,
+      { partitionKey: fid },
+      function (err) {
+        if (err) throw err;
+        count++;
+        deleteBatch(docs, callback);
+      });
+
+    if (!accepted) resp.setBody(count);
+  }
+}";
+
+
+var deleteFamilySproc = new StoredProcedureProperties
+{
+    Id = "deleteFamily",
+    Body = deleteFamilySprocBody
+};
+
+try
+{
+    await familyMembersContainer.Scripts.CreateStoredProcedureAsync(deleteFamilySproc);
+}
+catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Conflict)
+{
+    await familyMembersContainer.Scripts.ReplaceStoredProcedureAsync(deleteFamilySproc);
+}
+
+
+
 var faker = new Faker();
 
 var uniqueFamilyCount = Random.Shared.Next(10, 30);
