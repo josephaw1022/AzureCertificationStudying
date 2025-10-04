@@ -41,14 +41,14 @@ Eventual - no guaruntee of order or time frame of when this consistency occurs
 
 
 
-Apis for cosmsos
+#### Apis for cosmsos
 
-Nosql - recommended no-sql api
-Mongodb - another recommended no-sql api
-postgres - postgres with citus 
-cassandra - columnar data
-gremlin - graph data
-table - for those using table api in storage account
+- Nosql - recommended no-sql api
+- Mongodb - another recommended no-sql api
+- postgres - postgres with citus 
+- cassandra - columnar data
+- gremlin - graph data
+- table - for those using table api in storage account
 
 
 
